@@ -52,15 +52,16 @@ package
 			myTank.addEventListener("shoot", createBullet);
 			
 			enemies = new Vector.<EnemyTank>();
-			for (var i:int = 0; i < 5; i++) 
+			for (var i:int = 0; i < 4; i++) 
 			{
 				var enemy:EnemyTank = new EnemyTank();
 				enemies.push(enemy);
 				addChild(enemy);
 				enemy.x = Math.random() * 1870;
 				enemy.y = 100 + (200*i);
-				enemy.scaleX = 0.5;
-				enemy.scaleY = 0.5;
+				enemy.scaleX = 0.40;
+				enemy.scaleY = 0.40;
+				enemy.addEventListener("shoot", createBullet);
 			}
 			
 			crates = new Vector.<Crate>();
@@ -81,7 +82,7 @@ package
 		*///worth a try
 		private function createCrates():void 
 		{
-			for (var i:int = 0; i < 6; i++)
+			for (var i:int = 0; i < 9; i++)
 			{
 				var crate:Crate = new Crate();
 				crates.push(crate);
@@ -92,9 +93,9 @@ package
 				crate.scaleY = 0.5;
 			}
 		}
-		private function createBullet(e:Event):void
+		private function createBullet(e:ShootEvent):void
 		{
-			var bullet:Bullet = new Bullet(myTank.x, myTank.y, myTank.rotation + myTank.turretRotation);
+			var bullet:Bullet = new Bullet(e.shooter.x, e.shooter.y, e.shooter.rotation + e.shooter.turretRotation);
 			bullets.push(bullet);
 			addChildAt(bullet, 1);
 			bullet.scaleX = 0.5;
@@ -113,7 +114,7 @@ package
 			while (crates[j].hitTestPoint(myTank.x, myTank.y - myTank.height, true))
 			{
 				myTank.y --;
-				myTank.x --;//doest fuking work yet >_<
+				myTank.x --;//doest fuking work yet >_< (hittest om niet door de kisten te kunnen rijden
 			}
 			
 			var lenghth:int = enemies.length;
@@ -138,8 +139,33 @@ package
 					}
 				}
 				
-				
-				
+				for (var k:int = 0; k < enemies.length; k++ )
+				{
+					if (enemies[k].hitTestPoint(bullets[i].x, bullets[i].y, true))
+					{
+						toRemove = true;
+						enemies[k].lives--;
+						if (enemies[k].lives <= 0 )
+						{
+							enemies[k].destroy();
+							removeChild(enemies[k]);
+							enemies.splice(k, 1);
+						}
+						
+					}
+				}
+				if (myTank.hitTestPoint(bullets[i].x, bullets[i].y, true))
+				{
+					toRemove = true;
+					myTank.lives--;
+						if (myTank.lives <= 0 )
+						{
+							myTank.destroy();
+							removeChild(myTank);
+							myTank = null;
+							break;
+						}
+				}
 				if (bullets[i].x > stage.stageWidth ||
 				bullets[i].x < 0 ||
 				bullets[i].y >stage.stageHeight ||

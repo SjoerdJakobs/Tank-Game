@@ -1,6 +1,7 @@
 package  
 {
 	import flash.display.MovieClip;
+	import flash.events.Event;
 	import flash.geom.Point;
 	/**
 	 * ...
@@ -12,6 +13,7 @@ package
 		protected var myTankTurret:MovieClip;
 		public var turretRotation:Number;
 		public var targetPosition:Point;
+		public var lives:int = 10;
 		
 		public function BaseTank() 
 		{
@@ -30,11 +32,10 @@ package
 			myTankTurret.rotation = degrees;
 			turretRotation = degrees;
 		}
-		/*private function rotateBody():void
+		public function destroy():void
 		{
-			this.rotation += Main.input.x * 5;
-		}*/
-		//wil geen draaiende enemytank door mijn toetsenbord :p
+			this.removeEventListener(Event.ENTER_FRAME, update);
+		}
 	}
 
 }

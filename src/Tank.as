@@ -33,8 +33,10 @@ package
 		
 		private function onClick(e:MouseEvent):void 
 		{
-			trace();
-			dispatchEvent(new Event ("shoot"));
+			var se:ShootEvent = new ShootEvent("shoot");
+			se.shooter = this;
+			dispatchEvent(se);
+			//dispatchEvent(new Event ("shoot"));
 		}
 		
 		 override public function update():void
@@ -70,7 +72,11 @@ package
 			this.x += Main.input.y * xMove * 15;
 			this.y += Main.input.y * yMove * 15;
 		}
-		
+		override public function destroy():void
+		{
+			stage.removeEventListener(MouseEvent.CLICK, onClick);
+			super.destroy
+		}
 	}
 
 }
