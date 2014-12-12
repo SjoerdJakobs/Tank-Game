@@ -26,8 +26,8 @@ package
 		}
 		public function update():void
 		{
-			this.x += xMove * 17;
-			this.y += yMove * 17;
+			this.x += xMove * 20;
+			this.y += yMove * 20;
 		}
 		
 	}
