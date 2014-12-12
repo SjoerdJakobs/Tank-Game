@@ -20,6 +20,7 @@ package
 		public static var myTank:Tank;
 		public static var input:Point = new Point();
 		private var bullets:Vector.<Bullet>;//:Array;
+		private var scoreboard:ScoreBoard;
 		
 		private var crates:Vector.<Crate>;
 		
@@ -38,6 +39,9 @@ package
 			addChildAt(background, 0);
 			background.x = stage.stageWidth * 0;
 			background.y = stage.stageHeight * 0;
+			
+			scoreboard = new ScoreBoard();
+			addChild (scoreboard);
 			
 			bullets = new Vector.<Bullet>();//Array();
 			
@@ -110,6 +114,10 @@ package
 			for (var i : int = 0; i < enemies.length; i++) {
 				enemies[i].update();
 			}
+			/*if (myTank.lives > 0 )
+			{
+				myTank.update();
+			}*/  //maybe
 			myTank.update();
 			while (crates[j].hitTestPoint(myTank.x, myTank.y - myTank.height, true))
 			{
@@ -122,6 +130,8 @@ package
 			for (var i:int = 0; i < bullets.length; i++)
 			{
 				var toRemove:Boolean = false;
+				//var destroy2:Boolean = false; maybe
+				var missedAll:Boolean = true;
 				
 				bullets[i].update();
 				for (var j:int = 0; j < crates.length; j++)
@@ -144,9 +154,12 @@ package
 					if (enemies[k].hitTestPoint(bullets[i].x, bullets[i].y, true))
 					{
 						toRemove = true;
+						missedAll = false;
+						scoreboard.score += 20;
 						enemies[k].lives--;
 						if (enemies[k].lives <= 0 )
 						{
+							scoreboard.score += 100;
 							enemies[k].destroy();
 							removeChild(enemies[k]);
 							enemies.splice(k, 1);
@@ -160,6 +173,7 @@ package
 					myTank.lives--;
 						if (myTank.lives <= 0 )
 						{
+							//destroy2 = true; maybe?
 							myTank.destroy();
 							removeChild(myTank);
 							myTank = null;
@@ -174,12 +188,21 @@ package
 					toRemove = true;
 					//nog niet gedaan met klas
 				}
-				
+				if (missedAll)
+				{
+					scoreboard.score += 0;
+				}
 				if (toRemove)
 				{
 					removeChild(bullets[i]);
 					bullets.splice(i, 1);
 				}
+				/*if (destroy2)
+				{
+					stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
+					stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
+					removeEventListener(Event.ENTER_FRAME, loop);
+				}*/ //maybe?
 			}
 		}
 		private function onKeyUp(e:KeyboardEvent):void 
